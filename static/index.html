@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SupplyDemand / paper desk</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="mark">SD</span><div><p class="kicker">execution desk</p><h1>SupplyDemand</h1></div></div>
+      <div class="status"><span id="statusDot"></span><span id="statusText">Connecting</span><span class="divider"></span><span>paper mode</span></div>
+    </header>
+    <section class="hero-row">
+      <div><p class="eyebrow">BTC / USDT · live market data</p><div class="price-line"><strong id="price">--</strong><span id="priceChange">loading market data</span></div></div>
+      <button id="toggleButton" class="primary">Pause engine</button>
+    </section>
+    <section class="metrics">
+      <div class="metric"><span>Paper equity</span><strong id="balance">--</strong><small id="pnl">--</small></div>
+      <div class="metric"><span>Open position</span><strong id="position">Flat</strong><small id="positionDetail">No active setup</small></div>
+      <div class="metric"><span>Win rate</span><strong id="winRate">--</strong><small id="tradeCount">0 closed trades</small></div>
+      <div class="metric"><span>Risk / trade</span><strong><span id="riskValue">1.0</span>%</strong><input id="riskSlider" type="range" min="0.1" max="5" step="0.1" value="1"></div>
+    </section>
+    <section class="grid">
+      <article class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">market structure</p><h2>Zones & price action</h2></div><div class="chart-controls"><button class="timeframe active" data-timeframe="5m">5m</button><button class="timeframe" data-timeframe="15m">15m</button><button class="timeframe" data-timeframe="1h">1h</button><span class="live-label">● LIVE</span></div></div><div class="chart-wrap"><canvas id="chart" aria-label="BTC price chart with supply and demand zones"></canvas></div><div class="legend"><span><i class="swatch demand"></i>Demand</span><span><i class="swatch supply"></i>Supply</span><span><i class="line"></i>Price</span></div></article>
+      <article class="panel zones-panel"><div class="panel-head"><div><p class="eyebrow">decision context</p><h2>Active zones</h2></div></div><div id="zones" class="zone-list"></div><div class="signal"><span>Latest signal</span><strong id="signal">--</strong></div></article>
+    </section>
+    <section class="panel trades-panel"><div class="panel-head"><div><p class="eyebrow">audit trail</p><h2>Recent trades</h2></div><span id="updated">--</span></div><div class="table-scroll"><table><thead><tr><th>Side</th><th>Entry</th><th>Stop</th><th>Target</th><th>Result</th><th>Status</th></tr></thead><tbody id="trades"></tbody></table></div></section>
+    <footer>Paper execution only · signals are educational and not financial advice</footer>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

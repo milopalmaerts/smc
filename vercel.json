@@ -1,0 +1,9 @@
+{
+  "regions": ["fra1"],
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index.py" },
+    { "source": "/", "destination": "/static/index.html" },
+    { "source": "/app.js", "destination": "/static/app.js" },
+    { "source": "/styles.css", "destination": "/static/styles.css" }
+  ]
+}

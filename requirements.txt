@@ -1,0 +1,2 @@
+# The starter bot uses only Python's standard library.
+# Add an exchange SDK here when moving from paper trading to live data.
