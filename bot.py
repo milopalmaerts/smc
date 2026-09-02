@@ -235,12 +235,17 @@ class SupplyDemandBot:
         for zone in reversed(self.zones):
             if not zone.active or not (zone.low <= self.price <= zone.high):
                 continue
-            risk = max(25, zone.high - zone.low)
+            width = zone.high - zone.low
+            buffer = max(10, width * 0.15)
             if zone.kind == "demand":
-                self._open_trade("long", self.price, self.price - risk * 0.8, self.price + risk * 2)
+                stop = zone.low - buffer
+                risk = self.price - stop
+                self._open_trade("long", self.price, stop, self.price + risk * 2)
                 self.last_signal = f"Demand retest at ${self.price:,.0f}"
             else:
-                self._open_trade("short", self.price, self.price + risk * 0.8, self.price - risk * 2)
+                stop = zone.high + buffer
+                risk = stop - self.price
+                self._open_trade("short", self.price, stop, self.price - risk * 2)
                 self.last_signal = f"Supply retest at ${self.price:,.0f}"
             return
 
