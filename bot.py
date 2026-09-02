@@ -229,6 +229,21 @@ class SupplyDemandBot:
             result.append(zone)
         return result
 
+    MIN_REWARD_RISK = 1.5
+
+    def _liquidity_target(self, side: str, entry: float, risk: float) -> float | None:
+        """Aim for the nearest opposing zone (the first resting liquidity), falling
+        back to a plain 2R target when there is nothing ahead of price yet."""
+        if side == "long":
+            pool = [zone.high for zone in self.zones if zone.kind == "supply" and zone.high > entry]
+            target = min(pool) if pool else entry + risk * 2
+        else:
+            pool = [zone.low for zone in self.zones if zone.kind == "demand" and zone.low < entry]
+            target = max(pool) if pool else entry - risk * 2
+        if abs(target - entry) < risk * self.MIN_REWARD_RISK:
+            return None
+        return target
+
     def _look_for_entry(self) -> None:
         if any(trade.status == "open" for trade in self.trades):
             return
@@ -240,12 +255,18 @@ class SupplyDemandBot:
             if zone.kind == "demand":
                 stop = zone.low - buffer
                 risk = self.price - stop
-                self._open_trade("long", self.price, stop, self.price + risk * 2)
+                target = self._liquidity_target("long", self.price, risk)
+                if target is None:
+                    continue
+                self._open_trade("long", self.price, stop, target)
                 self.last_signal = f"Demand retest at ${self.price:,.0f}"
             else:
                 stop = zone.high + buffer
                 risk = stop - self.price
-                self._open_trade("short", self.price, stop, self.price - risk * 2)
+                target = self._liquidity_target("short", self.price, risk)
+                if target is None:
+                    continue
+                self._open_trade("short", self.price, stop, target)
                 self.last_signal = f"Supply retest at ${self.price:,.0f}"
             return
 
